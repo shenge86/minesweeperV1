@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>Minesweeper V 2.0</title>
+<link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="js/tabletools.js"></script>
+<script type="text/javascript">
+
+var Coords = function createCoords(x, y) {
+    return {
+        "x" : x, // x coordinate
+        "y" : y, // y coordinate			
+    };
+};
+
+var MineMap = new Array();
+var GuessMap = new Array();
+for (var i = 0, l = 10; i < l; i++) {
+    MineMap[i] = [];
+	GuessMap[i] = [];
+    for (var j = 0, l2 = 10; j < l2; j++) {
+        GuessMap[i][j] = Coords(i, j);
+		MineMap[i][j] = 0; // default is not a mine
+    }
+}
+
+// randomly generates mines
+nummines = 100;
+for (var i=0; i<nummines; i++) {
+	x = Math.floor(Math.random()*10);
+	y = Math.floor(Math.random()*10);
+	// alert(x);
+	// alert(y);
+	MineMap[x][y] = 1;	
+}
+
+$(document).ready(function() {
+	var selected = 0;
+	var gameover = 0;
+	$('td').click(function() {
+		// change to X to show selected
+		// after pressing validate, changes to matching element in MineMap		
+		if (selected == 0) {
+			x = $(this).parent().index(); // row number
+			y = $(this).index(); // column number
+			$(this).html('x: ' + x + ' y: ' + y);
+		}
+		selected = 1;
+	});
+
+	$('#cheat').click(function() {
+		$("#minetable").html("Boo");
+		$("p#infotext").html("Mines have been identified.");
+	});
+
+
+
+	$('#validate').click(function() {
+		selected = 0;
+		if (MineMap[x][y] == 1 && gameover == 0) {
+			$("#table tr:eq("+x+") td:eq("+y+")").html("!!!!");
+			$("p#infotext").html("BOOM! (" + x + ", " + y + ") was a bomb. You have exploded. GAME OVER!");
+			gameover = 1;
+		}
+	});
+
+});
+</script>
+</head>
+
+<body>
+<h1>Minesweeper</h1>
+<p id='infotext'>Start the game anytime.</p>
+
+<script type="text/javascript">
+// createTable([["1", "2"], ["3", "4"]]);
+createTable(GuessMap);
+</script>
+
+
+<button type='button' id='validate'>Validate</button>
+<button type='button' id='cheat'>Cheat</button>
+
+<h2>Questions while Coding</h2>
+<ol>
+<li>How do I find the number of mines next to a mine?</li>
+<li>How do I de-select an option?</li>
+<li>How do I modify a whole table?</li>
+
+</ol>
+
+</body>
+
+
+</html>
